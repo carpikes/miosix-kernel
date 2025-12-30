@@ -51,6 +51,31 @@ namespace miosix {
 static void IRQconfigureMPURegion(unsigned int region, unsigned int base,
     unsigned int size, bool executePermitted)
 {
+    // __CORTEX_M macro is defined in mpu_armv8.h
+#ifndef __CORTEX_M
+#error This MPU implementation works only on ARM CORTEX M
+#endif
+
+    /*
+#if __CORTEX_M == 33U
+    // TODO: this should be ARMv8-M
+    const uint32_t regionBase = base & (~(cacheLine-1));
+    const uint32_t sizeExponent = sizeToMpu(size);
+    const uint32_t regionSize = (1 << sizeExponent);
+    const uint32_t regionLimit = (regionBase + regionSize - 1) & (~(cacheLine-1));
+
+    MPU->RNR = region & 0xff;
+    MPU->RBAR = regionBase
+              | (executePermitted ? 0 : 1 << MPU_RBAR_XN_Pos)
+              | (0 << MPU_RBAR_SH_Pos)  // Non-sharable
+              // W^X: 0b11=RO by any privilege lvl; 0b01 RW by any privilege lvl.
+              | ((executePermitted ? 0b11 : 0b01) << MPU_RBAR_AP_Pos);
+
+    MPU->RLAR = regionLimit
+              | (1 << MPU_RLAR_EN_Pos);
+#else
+    // TODO: this should be ARMv7-M
+
     // NOTE: The ARM documentation is unclear about the effect of the shareable
     // bit on a single core architecture. Experimental evidence on an STM32F476
     // shows that setting it in IRQconfigureMPU for the internal RAM region
@@ -62,10 +87,13 @@ static void IRQconfigureMPURegion(unsigned int region, unsigned int base,
                | MPU_RASR_C_Msk     //Cacheable, write through
                | 1                  //Enable bit
                | sizeToMpu(size)<<1;
+#endif
+    */
 }
 
 void IRQconfigureMPU(const unsigned int *xramBase, unsigned int xramSize)
 {
+    /*
     // NOTE: using regions 0 to 3 for the kernel because in the ARM MPU in case
     // of overlapping regions the one with the highest number takes priority.
     // The lower regions are used by the kernel and by default forbid access to
@@ -82,6 +110,7 @@ void IRQconfigureMPU(const unsigned int *xramBase, unsigned int xramSize)
     if(xramSize)
         IRQconfigureMPURegion(2,reinterpret_cast<unsigned int>(xramBase),xramSize,allowCodeInXram);
     IRQenableMPUatBoot();
+    */
     
     #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT==1)
     SCB_EnableICache();

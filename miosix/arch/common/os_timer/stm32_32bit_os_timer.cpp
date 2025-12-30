@@ -31,7 +31,7 @@
 
 namespace miosix {
 
-#if defined(_ARCH_CORTEXM0_STM32F0) || defined(_ARCH_CORTEXM4_STM32F3) || defined(_ARCH_CORTEXM33_STM32H5)
+#if defined(_ARCH_CORTEXM0_STM32F0) || defined(_ARCH_CORTEXM4_STM32F3) || defined(_ARCH_CORTEXM33_STM32H5) || defined(_ARCH_CORTEXM33_STM32U5)
 
 class STM32Timer2HW
 {
@@ -45,6 +45,9 @@ public:
         if(RCC->CFGR & RCC_CFGR_PPRE_2) result/=1<<((RCC->CFGR>>8) & 0x3);
         #elif defined(_ARCH_CORTEXM33_STM32H5)
         if(RCC->CFGR2 & RCC_CFGR2_PPRE1_2) result/=1<<((RCC->CFGR2>>4) & 0x3);
+        #elif defined(_ARCH_CORTEXM33_STM32U5)
+        if(RCC->CFGR2 & RCC_CFGR2_PPRE1_2) 
+            result /= 1 << ((RCC->CFGR2>>RCC_CFGR2_PPRE1_Pos) & 0x3);
         #else
         if(RCC->CFGR & RCC_CFGR_PPRE1_2) result/=1<<((RCC->CFGR>>8) & 0x3);
         #endif
@@ -52,8 +55,12 @@ public:
     }
     static inline void IRQenable()
     {
-        #if defined(_ARCH_CORTEXM33_STM32H5)
+        #if defined(_ARCH_CORTEXM33_STM32H5) 
         RCC->APB1LENR |= RCC_APB1LENR_TIM2EN;
+        RCC_SYNC();
+        DBGMCU->APB1FZR1 |= DBGMCU_APB1FZR1_DBG_TIM2_STOP; //Stop while debugging
+        #elif defined(_ARCH_CORTEXM33_STM32U5)
+        RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
         RCC_SYNC();
         DBGMCU->APB1FZR1 |= DBGMCU_APB1FZR1_DBG_TIM2_STOP; //Stop while debugging
         #else

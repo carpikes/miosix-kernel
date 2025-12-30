@@ -83,7 +83,7 @@ namespace miosix {
 /// \def WITH_FILESYSTEM
 /// Allows to enable/disable filesystem support to save code size
 /// By default it is defined (filesystem support is enabled)
-#define WITH_FILESYSTEM
+//#define WITH_FILESYSTEM
 
 // The following options make sense only when filesystem is enabled, so they are
 // always left undefined otherwise
@@ -187,7 +187,7 @@ constexpr auto extraChecks=ExtraChecks::None;
 /// this option is that on some architectures debuggers lose communication with
 /// the device if it enters sleep mode, so to use debugging it is necessary to
 /// disable sleep support. For this reason, the option used to be called JTAG_DISABLE_SLEEP
-#define WITH_SLEEP
+//#define WITH_SLEEP
 
 /// \def WITH_DEEP_SLEEP 
 /// Adds interfaces and required variables to support entering deep sleep and
