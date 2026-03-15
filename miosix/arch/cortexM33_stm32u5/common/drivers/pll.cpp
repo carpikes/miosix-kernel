@@ -77,6 +77,13 @@
         static constexpr unsigned int R=1;   // 48MHz/R=48MHz
         static constexpr bool boostEnable=0;  // Yes if fClk > 55MHz
         static constexpr unsigned int VCore=0b01; // Range 3
+    #elif SYSCLK_FREQ_24MHz
+        static constexpr unsigned int N=6;   // 4MHz*N=24MHz
+        static constexpr unsigned int P=1;   // 24MHz/P=24MHz
+        static constexpr unsigned int Q=1;   // 24MHz/Q=24MHz
+        static constexpr unsigned int R=1;   // 24MHz/R=24MHz
+        static constexpr bool boostEnable=0;  // Yes if fClk > 55MHz
+        static constexpr unsigned int VCore=0b00; // Range 3
     #else
         #error "SYSCLK value not supported!"
     #endif
@@ -159,11 +166,11 @@ void startPll()
         // Assuming VCore Range 2
         FLASH->ACR = FLASH_ACR_PRFTEN | (FLASH_ACR_LATENCY_3WS & 0x0f);
     #elif SYSCLK_FREQ_48MHz
-        // Assuming VCore Range 3
+        // Assuming VCore Range 3 - 1 WS
         FLASH->ACR = FLASH_ACR_PRFTEN | (FLASH_ACR_LATENCY_1WS & 0x0f);
     #elif SYSCLK_FREQ_24MHz
         // Assuming VCore Range 4
-        FLASH->ACR = FLASH_ACR_PRFTEN | (FLASH_ACR_LATENCY_1WS & 0x0f);
+        FLASH->ACR = FLASH_ACR_PRFTEN | (FLASH_ACR_LATENCY_2WS & 0x0f) | FLASH_ACR_LPM;
     #else
         #error Not implemented
     #endif

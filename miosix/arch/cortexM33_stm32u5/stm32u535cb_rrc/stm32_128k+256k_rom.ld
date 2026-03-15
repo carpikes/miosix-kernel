@@ -50,7 +50,8 @@ ENTRY(_ZN6miosix13Reset_HandlerEv)
 /* specify the memory areas  */
 MEMORY
 {
-    flash(rx)   : ORIGIN = 0x08000000, LENGTH = 128K
+    flash(rx)   : ORIGIN = 0x08000000, LENGTH = 127K
+    nvm(rx)     : ORIGIN = 0x0801fc00, LENGTH = 1K
 
     /*
      * Note, the ram starts at 0x20000000 but it is necessary to add the size

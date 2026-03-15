@@ -52,10 +52,11 @@ void IRQbspInit()
     SystemCoreClockUpdate();
     //Enable all gpios
     RCC->AHB2ENR1 |= RCC_AHB2ENR1_GPIOAEN | RCC_AHB2ENR1_GPIOBEN |
-                    RCC_AHB2ENR1_GPIOCEN | RCC_AHB2ENR1_GPIODEN |
-                    RCC_AHB2ENR1_GPIOHEN;
+                    RCC_AHB2ENR1_GPIOCEN;
+    //| RCC_AHB2ENR1_GPIODEN | RCC_AHB2ENR1_GPIOHEN;
 
     RCC->AHB2ENR1 |= RCC_AHB2ENR1_SRAM2EN;
+    RCC->AHB3ENR |= RCC_AHB3ENR_SRAM4EN;
 
     RCC->APB3ENR  |= RCC_APB3ENR_SYSCFGEN;
 
@@ -63,7 +64,6 @@ void IRQbspInit()
     GPIOA->OSPEEDR=0xaaaaaaaa; //Default to 50MHz speed for all GPIOS
     GPIOB->OSPEEDR=0xaaaaaaaa;
     GPIOC->OSPEEDR=0xaaaaaaaa;
-    GPIOD->OSPEEDR=0xaaaaaaaa;
 
     // Initialize default serial
     IRQsetDefaultConsole(intrusive_ref_ptr<Device>(
